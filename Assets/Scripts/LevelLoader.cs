@@ -7,20 +7,25 @@ public class LevelLoader : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
 
-    private LevelLoader _levelLoader;
+    public static LevelLoader Instance;
 
     private void Awake()
     {
-        if(_levelLoader == null)
+        if(Instance == null)
         {
-            _levelLoader = this;
-
-            DontDestroyOnLoad(this);
+            Instance = this;
         }
-        else
+        else if(Instance.gameObject != gameObject)
         {
             Destroy(gameObject);
         }
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void ReloadCurrentScene()
+    {
+        StartCoroutine(LoadLevelCoroutine(SceneManager.GetActiveScene().buildIndex));
     }
 
     public void LoadLevel(int sceneIndex)

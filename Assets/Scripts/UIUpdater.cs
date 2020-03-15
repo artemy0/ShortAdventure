@@ -17,8 +17,11 @@ public class UIUpdater : MonoBehaviour
 
     private void OnDestroy()
     {
-        Bag.Instance.OnUpdate -= UpdateUI;
-        Race.Instance.OnUpdate -= UpdateUI;
+        if(Bag.Instance != null && Race.Instance != null)
+        {
+            Bag.Instance.OnUpdate -= UpdateUI;
+            Race.Instance.OnUpdate -= UpdateUI;
+        }
     }
 
     private void UpdateUI(Bag bag)

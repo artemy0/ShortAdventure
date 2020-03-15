@@ -45,7 +45,6 @@ GameObject:
   - component: {fileID: 6781234741441214185}
   - component: {fileID: 6781234741441214198}
   - component: {fileID: 6781234741441214186}
-  - component: {fileID: 6781234741441214190}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -212,21 +211,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd6c31ae672d1c744a3e6ec98316d27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _walkSpeed: 3
-  _jumpForce: 10
+  _walkSpeed: 150
+  _jumpForce: 7
   _whatIsGround:
     serializedVersion: 2
     m_Bits: 256
   _spawnPoint: {fileID: 0}
---- !u!114 &6781234741441214190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6781234741441214194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 618dbaa9e071e6d4986312b3d4b1126c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

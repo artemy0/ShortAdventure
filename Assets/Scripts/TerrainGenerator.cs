@@ -39,13 +39,17 @@ public class TerrainGenerator : MonoBehaviour
     {
         _heights = GenerateHeights(_width, _maxHeight, 3);
         GenerateTerrainByHeights(_heights);
-        GenerateCheckpoints(_heights);
-        GenerateFood(_heights);
+        GenerateCheckpointsByHeights(_heights);
+        GenerateFoodByHeights(_heights);
     }
 
     private void ClearLevel()
     {
+        //удаление всех тайлов
 
+        //удаление всех фруктов, т.е. всех дочерних элементов FoodObjectStorage
+
+        //удаление чекпоинта финишь
     }
 
     private int[] GenerateHeights(int width, int height, int firstHeight)
@@ -116,7 +120,7 @@ public class TerrainGenerator : MonoBehaviour
         }
     }
 
-    private void GenerateCheckpoints(int[] heights)
+    private void GenerateCheckpointsByHeights(int[] heights)
     {
         int width = heights.Length - 1;
         int height = heights[width] + 1;
@@ -125,7 +129,7 @@ public class TerrainGenerator : MonoBehaviour
         finishInstans.transform.parent = CheckpointObjectStorage.transform;
     }
 
-    private void GenerateFood(int[] heights)
+    private void GenerateFoodByHeights(int[] heights)
     {
         int distanceBetweenFood = heights.Length / (FoodCount + 2);
 

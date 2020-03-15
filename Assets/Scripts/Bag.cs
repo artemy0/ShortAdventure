@@ -17,11 +17,20 @@ public class Bag : MonoBehaviour
         {
             Instance = this;
         }
+        else if (Instance.gameObject != gameObject)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
     }
 
     private void OnDestroy()
     {
-        Instance = null;
+        if(Instance.gameObject == gameObject)
+        {
+            Instance = null;
+        }
     }
 
     public void AddFoods(int count)

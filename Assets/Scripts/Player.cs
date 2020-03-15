@@ -5,48 +5,110 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Speeds")]
-    public float WalkSpeed = 3;
-    public float JumpForce = 10;
+    [SerializeField] private float _walkSpeed = 3f;
+    [SerializeField] private float _jumpForce = 10f;
+    [SerializeField] private LayerMask _whatIsGround;
 
-    [SerializeField]private GameObject SpawnPoint;
+    [SerializeField] private GameObject _spawnPoint;
 
-    private Transform _transform;
     private Rigidbody2D _rigidbody;
     private Animator _animatorController;
 
-    private DirectionState _directionState;
-    private bool _canMove;
-    private bool _isGround;
-    private bool _canDoubleJump;
-    private bool _canJump;
+    private Transform _groundCheck;
+    const float GroundedRadius = .3f;
+    private bool _grounded;
 
-    private void Start()
+    private bool _facingRight = true;
+    private bool _doubleJumped = false;
+
+    private void Awake()
     {
-        _transform = GetComponent<Transform>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _animatorController = GetComponent<Animator>();
-        _directionState = transform.localScale.x > 0 ? DirectionState.Right : DirectionState.Left;
+
+        _groundCheck = transform.Find("GroundCheck");
+    }
+
+    private void FixedUpdate()
+    {
+        _grounded = false;
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(_groundCheck.position, GroundedRadius, _whatIsGround);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject != gameObject)
+            {
+                _doubleJumped = false;
+                _grounded = true;
+            }
+        }
+        _animatorController.SetBool("Ground", _grounded);
+
+        _animatorController.SetBool("DoubleJump", _doubleJumped);
+
+        _animatorController.SetFloat("vSpeed", _rigidbody.velocity.y);
+
+        //Debug.Log(_grounded ? "grounded" : "not grounded"); //remove
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawSphere(_groundCheck.position, GroundedRadius);
     }
 
     public void Move(Vector2 direction)
     {
+        if (_grounded)
+        {
+            if (!_facingRight && direction == Vector2.right)
+            {
+                Flip();
+            }
+            else if (_facingRight && direction == Vector2.left)
+            {
+                Flip();
+            }
+
+            float speed = Mathf.Abs(_rigidbody.velocity.x);
+            _animatorController.SetFloat("Speed", speed);
+
+            _rigidbody.velocity = direction * _walkSpeed * Time.deltaTime + new Vector2(0, _rigidbody.velocity.y); //called in FixedUpdate method
+        }
+    }
+
+    public void Jump()
+    {
+        if (_grounded)
+        {
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
+        }
+        else if (!_grounded && !_doubleJumped)
+        {
+            _doubleJumped = true;
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
+        }
+    }
+
+
+    /*
+    public void Move(Vector2 direction)
+    {
         if (_canMove)
         {
-            if (_directionState == DirectionState.Left && direction == Vector2.right)
+            if (!_facingRight && direction == Vector2.right)
             {
-                Rotate();
-                _directionState = DirectionState.Right;
+                Flip();
             }
             else if (_directionState == DirectionState.Right && direction == Vector2.left)
             {
-                Rotate();
+                Flip();
                 _directionState = DirectionState.Left;
             }
 
             float speed = GetSpeed();
             _animatorController.SetFloat("Speed", speed);
 
-            _rigidbody.velocity = direction * WalkSpeed * Time.deltaTime + new Vector2(0, _rigidbody.velocity.y); //called in FixedUpdate method
+            _rigidbody.velocity = direction * _walkSpeed * Time.deltaTime + new Vector2(0, _rigidbody.velocity.y); //called in FixedUpdate method
         }
     }
 
@@ -56,66 +118,72 @@ public class Player : MonoBehaviour
         {
             _canJump = false;
 
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, JumpForce);
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
             _animatorController.SetTrigger("Jump");
             _animatorController.SetBool("Fall", false);
         }
         else if (_canDoubleJump && _isGround == false)
         {
             _canDoubleJump = false;
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, JumpForce);
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
             _animatorController.SetTrigger("DoubleJump");
             _animatorController.SetBool("Fall", false);
         }
     }
+    */
 
-    private void Update()
+
+    //private void Update()
+    //{
+    //    if (_isGround == false && _rigidbody.velocity.y < 0f)
+    //    {
+    //        _animatorController.SetBool("Fall", true);
+    //    }
+    //    else
+    //    {
+    //        _animatorController.SetBool("Fall", false);
+    //    }
+    //}
+
+    private void Flip()
     {
-        if (_isGround == false && _rigidbody.velocity.y < 0f)
-        {
-            _animatorController.SetBool("Fall", true);
-        }
-        else
-        {
-            _animatorController.SetBool("Fall", false);
-        }
+        _facingRight = !_facingRight;
+
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 
-    private void Rotate()
-    {
-        _transform.localScale = new Vector3(-_transform.localScale.x, _transform.localScale.y, _transform.localScale.z);
-    }
+    //private float GetSpeed()
+    //{
+    //    return Mathf.Abs((float)System.Math.Round(_rigidbody.velocity.x, 1));
+    //}
 
-    private float GetSpeed()
-    {
-        return Mathf.Abs((float)System.Math.Round(_rigidbody.velocity.x, 1));
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    Debug.Log("Ender");
+    //    if (collision.gameObject.CompareTag("Terrain"))
+    //    {
+    //        _isGround = true;
+    //        _canMove = true;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Ender");
-        if (collision.gameObject.CompareTag("Terrain"))
-        {
-            _isGround = true;
-            _canMove = true;
+    //        _canJump = true;
+    //        _canDoubleJump = true;
 
-            _canJump = true;
-            _canDoubleJump = true;
+    //        float speed = GetSpeed();
+    //        _animatorController.SetFloat("Speed", speed); //idle or wolk anim after landing
+    //        _animatorController.SetBool("Fall", false);
+    //    }
+    //}
 
-            float speed = GetSpeed();
-            _animatorController.SetFloat("Speed", speed); //idle or wolk anim after landing
-            _animatorController.SetBool("Fall", false);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Terrain"))
-        {
-            _isGround = false;
-            _canMove = false;
-        }
-    }
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Terrain"))
+    //    {
+    //        _isGround = false;
+    //        _canMove = false;
+    //    }
+    //}
 
     public void Respawn()
     {
@@ -129,17 +197,11 @@ public class Player : MonoBehaviour
         _animatorController.SetTrigger("Desappearing");
         yield return new WaitForSeconds(_animatorController.GetCurrentAnimatorStateInfo(0).length + animationDelay);
 
-        transform.position = SpawnPoint.transform.position;
+        transform.position = _spawnPoint.transform.position;
 
         _animatorController.SetTrigger("Appearing");
         yield return new WaitForSeconds(_animatorController.GetCurrentAnimatorStateInfo(0).length);
 
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
-    }
-
-    enum DirectionState
-    {
-        Right,
-        Left
     }
 }

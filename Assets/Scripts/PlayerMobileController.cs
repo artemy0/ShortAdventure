@@ -8,12 +8,12 @@ public class PlayerMobileController : MonoBehaviour
 
     private bool _isMoveLeft;
 
-    private void Start()
+    private void Awake()
     {
         Player = Player == null ? GameObject.FindGameObjectWithTag("Player").GetComponent<Player>() : Player; //Player может быть не задан разработчиком. И если он указывает на null, проверяется его наличие как компонента, в противном случае будет установлено значение null (можно заменить на RequireComponent?!)
         if (Player == null)
         {
-            Debug.Log("Player not set to keyboard controller");
+            Debug.Log("Player not set to mobile/keyboard controller");
         }
     }
 

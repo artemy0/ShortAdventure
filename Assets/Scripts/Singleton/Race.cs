@@ -18,7 +18,7 @@ public class Race : MonoBehaviour
         {
             Instance = this;
         }
-        else if(Instance.gameObject == gameObject)
+        else if(Instance.gameObject != gameObject)
         {
             Destroy(gameObject);
         }

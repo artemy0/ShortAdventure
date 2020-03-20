@@ -47,8 +47,6 @@ public class Player : MonoBehaviour
         _animatorController.SetBool("DoubleJump", _doubleJumped);
 
         _animatorController.SetFloat("vSpeed", _rigidbody.velocity.y);
-
-        //Debug.Log(_grounded ? "grounded" : "not grounded"); //remove
     }
 
     private void OnDrawGizmosSelected()
@@ -89,62 +87,6 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    /*
-    public void Move(Vector2 direction)
-    {
-        if (_canMove)
-        {
-            if (!_facingRight && direction == Vector2.right)
-            {
-                Flip();
-            }
-            else if (_directionState == DirectionState.Right && direction == Vector2.left)
-            {
-                Flip();
-                _directionState = DirectionState.Left;
-            }
-
-            float speed = GetSpeed();
-            _animatorController.SetFloat("Speed", speed);
-
-            _rigidbody.velocity = direction * _walkSpeed * Time.deltaTime + new Vector2(0, _rigidbody.velocity.y); //called in FixedUpdate method
-        }
-    }
-
-    public void Jump()
-    {
-        if (_canJump && _isGround == true)
-        {
-            _canJump = false;
-
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
-            _animatorController.SetTrigger("Jump");
-            _animatorController.SetBool("Fall", false);
-        }
-        else if (_canDoubleJump && _isGround == false)
-        {
-            _canDoubleJump = false;
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
-            _animatorController.SetTrigger("DoubleJump");
-            _animatorController.SetBool("Fall", false);
-        }
-    }
-    */
-
-
-    //private void Update()
-    //{
-    //    if (_isGround == false && _rigidbody.velocity.y < 0f)
-    //    {
-    //        _animatorController.SetBool("Fall", true);
-    //    }
-    //    else
-    //    {
-    //        _animatorController.SetBool("Fall", false);
-    //    }
-    //}
-
     private void Flip()
     {
         _facingRight = !_facingRight;
@@ -153,37 +95,6 @@ public class Player : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
     }
-
-    //private float GetSpeed()
-    //{
-    //    return Mathf.Abs((float)System.Math.Round(_rigidbody.velocity.x, 1));
-    //}
-
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    Debug.Log("Ender");
-    //    if (collision.gameObject.CompareTag("Terrain"))
-    //    {
-    //        _isGround = true;
-    //        _canMove = true;
-
-    //        _canJump = true;
-    //        _canDoubleJump = true;
-
-    //        float speed = GetSpeed();
-    //        _animatorController.SetFloat("Speed", speed); //idle or wolk anim after landing
-    //        _animatorController.SetBool("Fall", false);
-    //    }
-    //}
-
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Terrain"))
-    //    {
-    //        _isGround = false;
-    //        _canMove = false;
-    //    }
-    //}
 
     public void Respawn()
     {

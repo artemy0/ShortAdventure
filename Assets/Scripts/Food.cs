@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    [SerializeField] private int Satiety = 1;
+    [SerializeField] private int _satiety = 1;
 
     private Animator _animator;
     private CircleCollider2D _collider;
@@ -21,7 +21,7 @@ public class Food : MonoBehaviour
         {
             _collider.enabled = false;
 
-            Bag.Instance.AddFoods(Satiety);
+            Bag.Instance.AddFoods(_satiety);
 
             _animator.SetTrigger("Destroy");
         }

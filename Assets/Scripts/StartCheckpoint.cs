@@ -15,7 +15,7 @@ public class StartCheckpoint : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (transform.position.x > collision.gameObject.transform.position.x) //is the player to the left of the start
+            if (transform.position.x > collision.transform.position.x) //is the player to the left of the start
             {
                 Race.Instance.StartRace();
             }

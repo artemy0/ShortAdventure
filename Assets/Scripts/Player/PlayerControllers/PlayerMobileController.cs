@@ -10,7 +10,7 @@ public class PlayerMobileController : MonoBehaviour
 
     private void Awake()
     {
-        Player = Player == null ? GameObject.FindGameObjectWithTag("Player").GetComponent<Player>() : Player; //Player может быть не задан разработчиком. И если он указывает на null, проверяется его наличие как компонента, в противном случае будет установлено значение null (можно заменить на RequireComponent?!)
+        Player = Player == null ? GameObject.FindGameObjectWithTag("Player").GetComponent<Player>() : Player;
         if (Player == null)
         {
             Debug.Log("Player not set to mobile/keyboard controller");
@@ -19,7 +19,7 @@ public class PlayerMobileController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Player != null) //игрок всё ещё может указывать на null, посему имеет смысл проверка (можно кинуть исключение вместо Debug.Log-а, тогда проверка не понадобится :) )
+        if (Player != null)
         {
             if(_isMoveLeft)
             {

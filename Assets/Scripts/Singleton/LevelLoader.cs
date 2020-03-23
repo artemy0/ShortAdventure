@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,13 +13,13 @@ public class LevelLoader : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
         }
         else if(Instance.gameObject != gameObject)
         {
             Destroy(gameObject);
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     public void ReloadCurrentScene()

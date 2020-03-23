@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Portal : MonoBehaviour
 {
@@ -18,6 +16,9 @@ public class Portal : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && _isTrigger == false)
         {
             _isTrigger = true;
+
+            SaveProgress.Instance.SaveAllData(Bag.Instance.FoodCount, Bag.Instance.TrophyCount);
+
             LevelLoader.Instance.LoadLevel(_sceneIndexForPortal); //0 is MainMenu
         }
     }

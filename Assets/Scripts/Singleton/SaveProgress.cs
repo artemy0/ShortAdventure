@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SaveProgress : MonoBehaviour
 {
@@ -15,55 +15,80 @@ public class SaveProgress : MonoBehaviour
         }
         set
         {
-            if (value > LoadData("BestScore"))
-                SaveData("BestScore", value);
+            SaveData("BestScore", value);
         }
     }
-
-    public int BestTime
+    public int BestTrophy
     {
         get
         {
-            return LoadData("BestTime");
+            return LoadData("BestTrophy");
         }
         set
         {
-            if (value > LoadData("BestTime"))
-                SaveData("BestTime", value);
+            SaveData("BestTrophy", value);
         }
     }
 
-    private void Start()
+    private void Awake()
     {
+        //Debug.Log("SaveProgress - Awake");
+
         if (Instance == null)
         {
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
         }
         else if (Instance.gameObject != gameObject)
         {
             Destroy(gameObject);
+            return;
         }
-
-        DontDestroyOnLoad(gameObject);
-
-        LoadAllData();
     }
 
-    public void LoadAllData()
+    private void Start() //OnLevelWasLoaded вызывается только тогда когда сцена загружается, но если мы с неё стартуем то метод OnLevelWasLoaded не вызывается, а вместо него вызывается Start (если ОЧЕНЬ кратко)
     {
-        OnUpdate(this);
+        //Debug.Log("SaveProgress - Start");
+
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            OnUpdate?.Invoke(this);
+        }
     }
 
-    public void SaveAllData(int scoreValue, int timeValue)
+    private void OnLevelWasLoaded(int level)
     {
-        BestScore = scoreValue;
-        BestTime = timeValue;
+        //Debug.Log("SaveProgress - OnLevelWasLoaded - " + level + " level");
+
+        if (level == 0)
+        {
+            OnUpdate?.Invoke(this);
+        }
+    }
+
+    public void SaveAllData(int scoreValue, int bestTrophy)
+    {
+        if(scoreValue > BestScore)
+        {
+            BestScore = scoreValue;
+
+            OnUpdate?.Invoke(this);
+        }
+        if(bestTrophy > BestTrophy)
+        {
+            BestTrophy = bestTrophy;
+
+            OnUpdate?.Invoke(this);
+        }
     }
 
     public void ResetAllDate()
     {
         BestScore = 0;
-        BestTime = 0;
+        BestTrophy = 0;
+
+        OnUpdate?.Invoke(this);
     }
 
     private int LoadData(string dataName)

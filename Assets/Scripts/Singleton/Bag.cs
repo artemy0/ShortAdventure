@@ -1,35 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bag : MonoBehaviour
 {
-    public int FoodCount { get; private set; }
-    public int TrophyCount { get; private set; }
-
     public static Bag Instance { get; private set; }
 
     public event System.Action<Bag> OnUpdate;
 
+    public int FoodCount { get; private set; }
+    public int TrophyCount { get; private set; }
+
     private void Awake()
-    {   
-        if(Instance == null)
+    {
+        //Debug.Log("Bag - Awake");
+
+        if (Instance == null)
         {
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
         }
         else if (Instance.gameObject != gameObject)
         {
             Destroy(gameObject);
+            return;
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
-    private void OnDestroy()
+    private void Start() //OnLevelWasLoaded вызывается только тогда когда сцена загружается, но если мы с неё стартуем то метод OnLevelWasLoaded не вызывается, а вместо него вызывается Start (если ОЧЕНЬ кратко)
     {
-        if(Instance.gameObject == gameObject)
+        //Debug.Log("Bag - Start");
+
+        if (SceneManager.GetActiveScene().buildIndex == 0)
         {
-            Instance = null;
+            OnUpdate?.Invoke(this);
+        }
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        //Debug.Log("Bag - OnLevelWasLoaded - " + level + " level");
+
+        if (level != 0)
+        {
+            OnUpdate?.Invoke(this);
         }
     }
 
@@ -37,19 +51,21 @@ public class Bag : MonoBehaviour
     {
         FoodCount += count;
 
-        if (OnUpdate != null)
-        {
-            OnUpdate(this);
-        }
+        OnUpdate?.Invoke(this);
     }
 
     public void AddTrophy()
     {
         TrophyCount++;
 
-        if (OnUpdate != null)
-        {
-            OnUpdate(this);
-        }
+        OnUpdate?.Invoke(this);
+    }
+
+    public void ResetBag()
+    {
+        FoodCount = 0;
+        TrophyCount = 0;
+
+        OnUpdate?.Invoke(this);
     }
 }

@@ -1,37 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class MenuUIUpdater : MonoBehaviour
 {
     [SerializeField] private Text _bestScoreText;
-    [SerializeField] private Text _bestTimeText;
+    [SerializeField] private Text _bestTrophyText;
 
-    public void Start()
+    public void OnEnable()
     {
-        InitUI();
+        //Debug.Log("MenuUI - OnEnable");
 
-        SaveProgress.Instance.OnUpdate += UpdateUI;
+        if (SaveProgress.Instance != null)
+        {
+            SaveProgress.Instance.OnUpdate += UpdateUI;
+        }
     }
 
     private void OnDestroy()
     {
+        //Debug.Log("MenuUI - OnDestroy");
+
         if (SaveProgress.Instance != null)
         {
             SaveProgress.Instance.OnUpdate -= UpdateUI;
         }
     }
 
-    private void InitUI()
-    {
-        UpdateUI(SaveProgress.Instance);
-    }
-
     private void UpdateUI(SaveProgress saveProgress)
     {
         _bestScoreText.text = "Best score is " + saveProgress.BestScore;
-
-        _bestTimeText.text = "Best time is " + saveProgress.BestTime;
+        _bestTrophyText.text = "Best trophy is " + saveProgress.BestTrophy;
     }
 }

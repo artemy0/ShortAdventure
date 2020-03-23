@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Food : MonoBehaviour
 {
@@ -9,7 +7,7 @@ public class Food : MonoBehaviour
     private Animator _animator;
     private CircleCollider2D _collider;
 
-    private void Start()
+    private void Awake()
     {
         _animator = GetComponent<Animator>();
         _collider = GetComponent<CircleCollider2D>();
